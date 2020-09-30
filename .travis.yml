@@ -10,6 +10,10 @@ node_js:
 before_install: if [[ `npm -v` < 4 ]]; then npm install -g npm; fi
 jobs:
   include:
+    - name: 'Browser Tests'
+      node_js: 12
+      os: linux
+      script: npm run cache && npm run test-browser
     - name: 'Coverage'
       node_js: stable
       os: linux
