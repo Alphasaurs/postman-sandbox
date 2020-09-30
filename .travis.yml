@@ -4,9 +4,9 @@ os:
 - linux
 - windows
 node_js:
-- "6"
 - "8"
 - "10"
+- "12"
 before_install: if [[ `npm -v` < 4 ]]; then npm install -g npm; fi
 jobs:
   include:
