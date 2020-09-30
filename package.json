@@ -21,7 +21,7 @@
     "test-lint": "node npm/test-lint.js",
     "test-unit": "node npm/test-unit.js",
     "test-vm": "node npm/test-vm.js",
-    "test": "npm run test-lint && npm run cache && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
+    "test": "npm run test-unit && npm run test-browser",
     "prepublish": "node npm/prepublish.js"
   },
   "keywords": [
@@ -40,7 +40,7 @@
     "uvm": "2.0.0"
   },
   "devDependencies": {
-    "ajv": "6.12.4",
+    "ajv": "6.12.5",
     "assert": "2.0.0",
     "async": "2.6.2",
     "atob": "2.1.2",
