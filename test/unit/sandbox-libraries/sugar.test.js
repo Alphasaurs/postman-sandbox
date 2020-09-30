@@ -3,14 +3,14 @@ describe('sandbox library - sugarjs', function () {
     var Sandbox = require('../../../'),
         context;
 
-    beforeEach(function (done) {
+    before(function (done) {
         Sandbox.createContext({}, function (err, ctx) {
             context = ctx;
             done(err);
         });
     });
 
-    afterEach(function () {
+    after(function () {
         context.dispose();
         context = null;
     });
@@ -41,7 +41,7 @@ describe('sandbox library - sugarjs', function () {
         it('Array must work correctly', function (done) {
             context.execute(`
                 var assert = require('assert');
-    
+
                 assert(['a', 'b', 'c'].none('d'), 'Array.prototype.none must work correctly');
                 assert([ [1,2], [2,3] ].any([2,3]), 'Array.prototype.any must work correctly');
                 assert.strictEqual([ 1, 2, 3, 4, 5 ].average(), 3, 'Array.prototype.average must work correctly');
@@ -51,7 +51,7 @@ describe('sandbox library - sugarjs', function () {
         it('Date must work correctly', function (done) {
             context.execute(`
                 var assert = require('assert');
-    
+
                 assert.equal(Date.now(), (new Date()).getTime(), 'Date.prototype.getTime must work correctly');
                 assert(Date.create('next week').isFuture(), 'Date.prototype.isFuture must work correctly');
                 assert(Date.create('2000').isLeapYear(), 'Date.prototype.isLeapYear must work correctly');
@@ -64,10 +64,10 @@ describe('sandbox library - sugarjs', function () {
         it('Function must work correctly', function (done) {
             context.execute(`
                 var assert = require('assert');
-    
+
                 var fCount = 0,
                     fn = (function() { fCount++; }).once();
-    
+
                 fn(); fn(); fn();
                 assert.strictEqual(fCount, 1, 'Function.prototype.once must work correctly');
             `, done);
@@ -76,7 +76,7 @@ describe('sandbox library - sugarjs', function () {
         it('Number must work correctly', function (done) {
             context.execute(`
                 var assert = require('assert');
-    
+
                 assert((56).isEven(), 'Number.prototype.isEven must work correctly');
                 assert.strictEqual((56).hex(), '38', 'Number.prototype.hex must work correctly');
                 assert.strictEqual((56).ordinalize(), '56th', 'Number.prototype.ordinalize must work correctly');
@@ -87,7 +87,7 @@ describe('sandbox library - sugarjs', function () {
         it('String must work correctly', function (done) {
             context.execute(`
                 var assert = require('assert');
-    
+
                 assert('jumpy'.endsWith('py'), 'String.prototype.endsWith must work correctly');
                 assert.strictEqual('abc'.shift(5), 'fgh', 'String.prototype.shift must work correctly');
                 assert.strictEqual('a'.repeat(5), 'aaaaa', 'String.prototype.repeat must work correctly');

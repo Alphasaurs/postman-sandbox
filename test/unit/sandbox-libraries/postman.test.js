@@ -3,14 +3,14 @@ describe('sandbox library - postman legacy', function () {
     var Sandbox = require('../../../'),
         context;
 
-    beforeEach(function (done) {
+    before(function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             context = ctx;
             done(err);
         });
     });
 
-    afterEach(function () {
+    after(function () {
         context.dispose();
         context = null;
     });

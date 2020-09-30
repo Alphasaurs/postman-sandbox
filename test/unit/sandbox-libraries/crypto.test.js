@@ -3,14 +3,14 @@ describe('sandbox library - CryptoJS', function () {
     var Sandbox = require('../../../'),
         context;
 
-    beforeEach(function (done) {
+    before(function (done) {
         Sandbox.createContext({}, function (err, ctx) {
             context = ctx;
             done(err);
         });
     });
 
-    afterEach(function () {
+    after(function () {
         context.dispose();
         context = null;
     });
@@ -29,7 +29,7 @@ describe('sandbox library - CryptoJS', function () {
         context.execute(`
             var assert = require('assert'),
                 ciphertext = CryptoJS.AES.encrypt('my message', 'secret key 123'),
- 
+
                 bytes  = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key 123'),
                 plaintext = bytes.toString(CryptoJS.enc.Utf8);
 

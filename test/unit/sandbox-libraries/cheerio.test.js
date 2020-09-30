@@ -6,14 +6,14 @@ describe('sandbox library - Cheerio', function () {
             <ul id="fruits"><li class="apple">Apple</li><li class="orange">Orange</li><li class="pear">Pear</li></ul>
         `;
 
-    beforeEach(function (done) {
+    before(function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             context = ctx;
             done(err);
         });
     });
 
-    afterEach(function () {
+    after(function () {
         context.dispose();
         context = null;
     });

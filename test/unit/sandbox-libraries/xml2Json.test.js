@@ -3,14 +3,14 @@ describe('sandbox library - xml2Json', function () {
     var Sandbox = require('../../../'),
         context;
 
-    beforeEach(function (done) {
+    before(function (done) {
         Sandbox.createContext({}, function (err, ctx) {
             context = ctx;
             done(err);
         });
     });
 
-    afterEach(function () {
+    after(function () {
         context.dispose();
         context = null;
     });

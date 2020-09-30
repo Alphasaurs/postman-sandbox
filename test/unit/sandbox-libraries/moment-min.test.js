@@ -3,14 +3,14 @@ describe('sandbox library - moment.min', function () {
     var Sandbox = require('../../../'),
         context;
 
-    beforeEach(function (done) {
+    before(function (done) {
         Sandbox.createContext({}, function (err, ctx) {
             context = ctx;
             done(err);
         });
     });
 
-    afterEach(function () {
+    after(function () {
         context.dispose();
         context = null;
     });
@@ -45,7 +45,7 @@ describe('sandbox library - moment.min', function () {
                 end = moment([2007, 0, 29]);
 
             assert.strictEqual(start.to(start, true), 'a few seconds');
-            assert.strictEqual(start.to(start), 'a few seconds ago');            
+            assert.strictEqual(start.to(start), 'a few seconds ago');
 
             assert.strictEqual(start.to(end, true), 'a day');
             assert.strictEqual(start.to(end), 'in a day');
