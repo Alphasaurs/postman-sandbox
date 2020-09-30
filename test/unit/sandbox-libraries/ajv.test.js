@@ -1,33 +1,27 @@
 describe('sandbox library - AJV', function () {
     this.timeout(1000 * 60);
-    var Sandbox = require('../../../'),
-        context;
-
-    before(function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
-            context = ctx;
-            done(err);
-        });
-    });
-
-    after(function () {
-        context.dispose();
-        context = null;
-    });
+    var Sandbox = require('../../../lib');
 
     it('should exist', function (done) {
-        context.execute(`
-            var Ajv = require('ajv'),
-                assert = require('assert');
+        Sandbox.createContext({debug: true}, function (err, context) {
+            if (err) { return done(err); }
 
-            assert.strictEqual(typeof Ajv, 'function', 'typeof Ajv must be function');
-            assert.strictEqual(typeof new Ajv(), 'object', 'typeof new Ajv() must be object');
-        `, done);
+            context.execute(`
+                var Ajv = require('ajv'),
+                    assert = require('assert');
+
+                assert.strictEqual(typeof Ajv, 'function', 'typeof Ajv must be function');
+                assert.strictEqual(typeof new Ajv(), 'object', 'typeof new Ajv() must be object');
+            `, {}, done);
+        });
     });
 
     describe('methods', function () {
         it('validate', function (done) {
-            context.execute(`
+            Sandbox.createContext({debug: true}, function (err, context) {
+                if (err) { return done(err); }
+
+                context.execute(`
                 var Ajv = require('ajv'),
                     assert = require('assert'),
 
@@ -44,11 +38,15 @@ describe('sandbox library - AJV', function () {
                     };
 
                 assert(ajv.validate(schema, {alpha: true}), 'AJV schema validation must identify valid objects');
-            `, done);
+            `, {}, done);
+            });
         });
 
         it('compile', function (done) {
-            context.execute(`
+            Sandbox.createContext({debug: true}, function (err, context) {
+                if (err) { return done(err); }
+
+                context.execute(`
                 var Ajv = require('ajv'),
                     assert = require('assert'),
 
@@ -67,79 +65,84 @@ describe('sandbox library - AJV', function () {
                     validate = ajv.compile(schema);
 
                 assert(validate({alpha: true}), 'AJV schema validation must identify valid objects');
-            `, done);
+            `, {}, done);
+            });
         });
 
         it('compileAsync', function (done) {
-            context.execute(`
-                var Ajv = require('ajv'),
-
-                    SCHEMAS = {
-                        'https://schema.getpostman.com/collection.json': {
-                            $id: 'https://schema.getpostman.com/collection.json',
-                            required: ['request'],
-                            properties: {
-                                name: {type: 'string'},
-                                request: {$ref: 'request.json'}
-                            }
-                        },
-                        'https://schema.getpostman.com/request.json': {
-                            $id: 'https://schema.getpostman.com/request.json',
-                            required: ['url'],
-                            properties: {
-                                method: {type: 'string'},
-                                url: {$ref: 'url.json'}
-                            }
-                        },
-                        'https://schema.getpostman.com/url.json': {
-                            $id: 'https://schema.getpostman.com/url.json',
-                            properties: {
-                                protocol: {type: 'string'},
-                                host: {type: 'string'}
-                            }
-                        }
-                    },
-
-                    ajv = new Ajv({
-                        loadSchema: function (uri) {
-                            return new Promise(function (resolve, reject) {
-                                setTimeout(function () {
-                                    SCHEMAS[uri] ? resolve(SCHEMAS[uri]) : reject(new Error('404'));
-                                }, 10);
-                            });
-                        }
-                    }),
-
-                    valid;
-
-                ajv.compileAsync(SCHEMAS['https://schema.getpostman.com/collection.json'])
-                    .then(function (validate) {
-                        valid = validate({
-                            name: 'test',
-                            request: {
-                                method: 'GET',
-                                url: 'https://getpostman.com'
-                            }
-                        });
-                    });
-
-                // this hack is required since we can't assert on async functions
-                setTimeout(function () {
-                    pm.globals.set('valid', valid);
-                }, 100);
-            `, {
-                timeout: 200
-            }, function (err, res) {
+            Sandbox.createContext({debug: true}, function (err, context) {
                 if (err) { return done(err); }
 
-                expect(err).to.be.null;
-                expect(res).to.nested.include({
-                    'return.async': true
-                });
+                context.execute(`
+                    var Ajv = require('ajv'),
 
-                expect(res).to.have.property('globals').that.has.property('values').that.is.an('array');
-                expect(res.globals.values[0].value).to.be.true;
-                done();
+                        SCHEMAS = {
+                            'https://schema.getpostman.com/collection.json': {
+                                $id: 'https://schema.getpostman.com/collection.json',
+                                required: ['request'],
+                                properties: {
+                                    name: {type: 'string'},
+                                    request: {$ref: 'request.json'}
+                                }
+                            },
+                            'https://schema.getpostman.com/request.json': {
+                                $id: 'https://schema.getpostman.com/request.json',
+                                required: ['url'],
+                                properties: {
+                                    method: {type: 'string'},
+                                    url: {$ref: 'url.json'}
+                                }
+                            },
+                            'https://schema.getpostman.com/url.json': {
+                                $id: 'https://schema.getpostman.com/url.json',
+                                properties: {
+                                    protocol: {type: 'string'},
+                                    host: {type: 'string'}
+                                }
+                            }
+                        },
+
+                        ajv = new Ajv({
+                            loadSchema: function (uri) {
+                                return new Promise(function (resolve, reject) {
+                                    setTimeout(function () {
+                                        SCHEMAS[uri] ? resolve(SCHEMAS[uri]) : reject(new Error('404'));
+                                    }, 10);
+                                });
+                            }
+                        }),
+
+                        valid;
+
+                    ajv.compileAsync(SCHEMAS['https://schema.getpostman.com/collection.json'])
+                        .then(function (validate) {
+                            valid = validate({
+                                name: 'test',
+                                request: {
+                                    method: 'GET',
+                                    url: 'https://getpostman.com'
+                                }
+                            });
+                        });
+
+                    // this hack is required since we can't assert on async functions
+                    setTimeout(function () {
+                        pm.globals.set('valid', valid);
+                    }, 100);
+                `, {
+                    timeout: 200
+                }, function (err, res) {
+                    if (err) { return done(err); }
+
+                    expect(err).to.be.null;
+                    expect(res).to.nested.include({
+                        'return.async': true
+                    });
+
+                    expect(res).to.have.property('globals').that.has.property('values').that.is.an('array');
+                    expect(res.globals.values[0].value).to.be.true;
+                    done();
+                });
             });
         });
     });
